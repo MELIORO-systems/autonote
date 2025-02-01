@@ -59,7 +59,7 @@
     confirmBtn.addEventListener('click', () => {
       const text = transcriptArea.value;
       // Ujisti se, že máš nasazený Google Apps Script a správnou URL (nahraď 'TVÁ_URL_WEB_APPS')
-      fetch('https://script.google.com/macros/library/d/138VoTH1YHBs6p83nM3zVQw8JEBt9F5wuoHed9kpbS858ac34aJJZd3N3/1', {
+      fetch('https://script.google.com/macros/s/AKfycbxiGb8jDlK6_cV1qJC6H7WSoEuqDnOXnihbUTYnTPRRlpnlU9wIkQvMIKlwzpmlSZb2tQ/exec', {
         method: 'POST',
         mode: 'no-cors',  // u Google Apps Script může být vhodné no-cors, pokud nechceš řešit CORS
         headers: {
