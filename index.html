@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Speech-to-Text Aplikace</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea { width: 100%; font-size: 1em; }
+    button { margin: 5px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h1>Speech-to-Text Aplikace</h1>
+  <textarea id="transcript" rows="10" placeholder="Zde se zobrazí přepis řeči..."></textarea>
+  <br>
+  <button id="start">Start</button>
+  <button id="stop">Stop</button>
+  <button id="confirm">Potvrdit</button>
+
+  <script>
+    // Získání odkazů na HTML prvky
+    const transcriptArea = document.getElementById('transcript');
+    const startBtn = document.getElementById('start');
+    const stopBtn = document.getElementById('stop');
+    const confirmBtn = document.getElementById('confirm');
+
+    // Kontrola podpory Web Speech API
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!window.SpeechRecognition) {
+      alert("Tvůj prohlížeč nepodporuje rozpoznávání řeči. Zkus prosím Chrome nebo Edge.");
+    }
+
+    // Inicializace rozpoznávání řeči
+    const recognition = new window.SpeechRecognition();
+    recognition.interimResults = true;  // pro zobrazení průběžných výsledků
+    recognition.lang = 'cs-CZ';         // nastavení češtiny
+
+    // Při získání výsledků aktualizuj obsah textového pole
+    recognition.addEventListener('result', e => {
+      let transcript = '';
+      for (const res of e.results) {
+        transcript += res[0].transcript;
+      }
+      transcriptArea.value = transcript;
+    });
+
+    // Obsluha tlačítka Start
+    startBtn.addEventListener('click', () => {
+      transcriptArea.value = '';  // vyčistí se předchozí text
+      recognition.start();
+    });
+
+    // Obsluha tlačítka Stop
+    stopBtn.addEventListener('click', () => {
+      recognition.stop();
+    });
+
+    // Obsluha tlačítka Potvrdit - zde se odešle text na server
+    confirmBtn.addEventListener('click', () => {
+      const text = transcriptArea.value;
+      // Ujisti se, že máš nasazený Google Apps Script a správnou URL (nahraď 'TVÁ_URL_WEB_APPS')
+      fetch('TVÁ_URL_WEB_APPS', {
+        method: 'POST',
+        mode: 'no-cors',  // u Google Apps Script může být vhodné no-cors, pokud nechceš řešit CORS
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: text })
+      })
+      .then(response => {
+        console.log('Data byla odeslána úspěšně.');
+      })
+      .catch(error => {
+        console.error('Chyba při odesílání dat:', error);
+      });
+    });
+  </script>
+</body>
+</html>
